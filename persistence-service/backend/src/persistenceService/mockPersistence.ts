@@ -1,6 +1,6 @@
 import { EntityTarget, ObjectLiteral } from "typeorm";
-import { Photo } from '../strategy/postgresql/photo';
-import { Video } from '../strategy/postgresql/video';
+import { Photo } from '../strategy/postgresql/photo/photo';
+import { Video } from '../strategy/postgresql/video/video';
 import IPersistenceService from "./persistenceService";
 
 export default class MockPersistenceService implements IPersistenceService {

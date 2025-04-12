@@ -1,8 +1,8 @@
-import { USE_MOCK_DB } from '../config/env';
+import { USE_MOCK_DB } from '../../../src/config/env';
+import MockPersistenceService from '../../persistenceService/mockPersistence';
+import type IPersistenceService from '../../persistenceService/persistenceService';
+import PostgresPersistenceService from '../../persistenceService/postgresPersistence';
 import { initializeDatabase } from './configure';
-import MockPersistenceService from './persistenceService/mockPersistenceService';
-import type IPersistenceService from './persistenceService/persistenceService';
-import PostgresPersistenceService from './persistenceService/postgresPersistence';
 
 // Singleton instance
 let persistenceServiceInstance: IPersistenceService | null = null;

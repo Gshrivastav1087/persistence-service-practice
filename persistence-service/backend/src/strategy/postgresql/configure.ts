@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { DataSource } from "typeorm";
-import { Photo } from "./photo";
-import { Video } from "./video";
+import { Photo } from "./photo/photo";
+import { Video } from "./video/video";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -9,13 +9,13 @@ dotenv.config();
 // Create the AppDataSource
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: process.env.DB_HOST || "localhost",
+  host: process.env.DB_HOST || "db",
   port: parseInt(process.env.DB_PORT || "5432"),
   username: process.env.POSTGRES_USER || "postgres",
   password: process.env.POSTGRES_PASSWORD || "pg_password",
   database: process.env.POSTGRES_DB || "postgres",
   entities: [Photo, Video],
-  synchronize: false,
+  synchronize: true,
   logging: true,
   connectTimeoutMS: 10000
 });
@@ -30,7 +30,7 @@ export async function initializeDatabase(maxRetries = 5, retryInterval = 3000) {
 
   // Log connection details
   console.log("Database connection details:");
-  console.log(`- Host: ${process.env.DB_HOST || "localhost"}`);
+  console.log(`- Host: ${process.env.DB_HOST || "db"}`);
   console.log(`- Port: ${process.env.DB_PORT || "5432"}`);
   console.log(`- Database: ${process.env.POSTGRES_DB || "postgres"}`);
   console.log(`- User: ${process.env.POSTGRES_USER || "postgres"}`);

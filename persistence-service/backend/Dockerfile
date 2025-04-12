@@ -2,6 +2,7 @@ FROM node:lts-alpine
 
 WORKDIR /app
 
+COPY wait-for-postgres.sh .
 COPY package*.json ./
 COPY . .
 

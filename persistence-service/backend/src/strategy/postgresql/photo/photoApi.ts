@@ -1,5 +1,5 @@
 import express from "express";
-import getPersistenceService from "../../../persistenceService";
+import { getPersistenceService } from "../../../persistenceService";
 import { Photo } from "./photo";
 
 export default class PhotoApi {

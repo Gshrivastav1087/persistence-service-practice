@@ -13,6 +13,7 @@ services:
       web-services:
         aliases:
           - backend.${BACKEND_DOMAIN:-127-0-0-1.sslip.io}
+
   db:
     image: postgres:latest
     volumes:
@@ -23,6 +24,11 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     networks:
       - web-services
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   pgadmin:
     image: dpage/pgadmin4
@@ -36,6 +42,7 @@ services:
       - db
     networks:
       - web-services
+
   backend:
     build: backend
     restart: always
@@ -46,11 +53,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - web-services
     ports:
-    - 8000:8000
+      - 8000:8000
 
 networks:
   web-services:

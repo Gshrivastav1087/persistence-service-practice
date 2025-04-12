@@ -1,31 +1,40 @@
 import { USE_MOCK_DB } from '../config/env';
+import MockPersistenceService from '../persistenceService/mockPersistence';
 import AppDataSource from '../strategy/postgresql/configure';
-import MockPersistenceService from './mockPersistence';
 import IPersistenceService from './persistenceService';
 import PostgresPersistenceService from './postgresPersistence';
 
-// Create a function to determine which persistence service to use
-const getPersistenceService = () => {
-  // If mock DB is requested through env variable, use the mock service
-  if (USE_MOCK_DB) {
-    console.log("Using Mock persistence service as configured");
-    return new MockPersistenceService();
-  }
+let persistenceService: IPersistenceService;
 
-  // Check if AppDataSource is initialized
-  if (AppDataSource && AppDataSource.isInitialized) {
-    console.log("Using PostgreSQL persistence service");
-    return new PostgresPersistenceService(AppDataSource);
+/**
+ * Initializes the persistence service depending on the DB type.
+ * Should be called before using getPersistenceService().
+ */
+export async function initializePersistenceService(): Promise<void> {
+  if (USE_MOCK_DB) {
+    console.log('Using Mock persistence service as configured');
+    persistenceService = new MockPersistenceService();
   } else {
-    console.log("Database not initialized, falling back to Mock persistence service");
-    return new MockPersistenceService();
+    try {
+      if (!AppDataSource.isInitialized) {
+        await AppDataSource.initialize();
+        console.log('PostgreSQL database initialized');
+      }
+      persistenceService = new PostgresPersistenceService(AppDataSource);
+    } catch (error) {
+      console.error('Failed to initialize PostgreSQL. Falling back to Mock.', error);
+      persistenceService = new MockPersistenceService();
+    }
   }
-};
-// Create and export the persistence service function
-export function getPersistenceService(): IPersistenceService {
-  return createPersistenceService();
 }
 
-// Export the persistence service
-const persistenceService = getPersistenceService();
-export default persistenceService;
+/**
+ * Returns the initialized persistence service.
+ * Make sure initializePersistenceService() is called before this.
+ */
+export function getPersistenceService(): IPersistenceService {
+  if (!persistenceService) {
+    throw new Error('Persistence service not initialized. Call initializePersistenceService() first.');
+  }
+  return persistenceService;
+}

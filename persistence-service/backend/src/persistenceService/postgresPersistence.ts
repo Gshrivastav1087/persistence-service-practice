@@ -1,23 +1,23 @@
 import { DataSource, EntityTarget, FindOptionsWhere, ObjectLiteral } from "typeorm";
 import IPersistenceService from "./persistenceService";
 
-export default class postgresPersistence implements IPersistenceService {
-  #dataSource: DataSource;
+export default class PostgresPersistenceService implements IPersistenceService {
+  private dataSource: DataSource;
 
   constructor(dataSource: DataSource) {
     if (!dataSource) {
       throw new Error("DataSource cannot be null or undefined");
     }
-    this.#dataSource = dataSource;
+    this.dataSource = dataSource;
   }
 
   // Check dataSource before each operation
   private validateDataSource() {
-    if (!this.#dataSource) {
+    if (!this.dataSource) {
       throw new Error("DataSource is not initialized");
     }
     
-    if (!this.#dataSource.isInitialized) {
+    if (!this.dataSource.isInitialized) {
       throw new Error("DataSource is not connected to the database");
     }
   }
@@ -30,7 +30,7 @@ export default class postgresPersistence implements IPersistenceService {
     
     try {
       const whereCondition = { id } as unknown as FindOptionsWhere<T>;
-      return await this.#dataSource.manager.find(Entity, { where: whereCondition });
+      return await this.dataSource.manager.find(Entity, { where: whereCondition });
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(`Database error in create method: ${error.message}`);
@@ -49,7 +49,7 @@ export default class postgresPersistence implements IPersistenceService {
     this.validateDataSource();
     
     try {
-      return await this.#dataSource.manager.save(Entity, data);
+      return await this.dataSource.manager.save(Entity, data);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(`Database error in insert method: ${error.message}`);
@@ -70,7 +70,7 @@ export default class postgresPersistence implements IPersistenceService {
     
     try {
       const whereCondition = { id } as unknown as FindOptionsWhere<T>;
-      await this.#dataSource.manager.update(Entity, whereCondition, updates);
+      await this.dataSource.manager.update(Entity, whereCondition, updates);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(`Database error in update method: ${error.message}`);
@@ -90,7 +90,7 @@ export default class postgresPersistence implements IPersistenceService {
     
     try {
       const whereCondition = { id } as unknown as FindOptionsWhere<T>;
-      await this.#dataSource.manager.delete(Entity, whereCondition);
+      await this.dataSource.manager.delete(Entity, whereCondition);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(`Database error in delete method: ${error.message}`);
@@ -108,7 +108,7 @@ export default class postgresPersistence implements IPersistenceService {
     this.validateDataSource();
     
     try {
-      return await this.#dataSource.manager.find(Entity);
+      return await this.dataSource.manager.find(Entity);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(`Database error in findAll method: ${error.message}`);
