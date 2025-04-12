@@ -1,0 +1,45 @@
+import axios from "axios";
+
+const baseURL = "http://localhost:8000"; // Changed port to 8000
+
+describe("Photo API Integration", () => {
+  let createdPhotoId: number;
+
+  it("should create a photo", async () => {
+    const payload = {
+      name: "Test Photo",
+      description: "A beautiful test photo",
+      filename: "test.jpg"
+    };
+
+    const response = await axios.post(`${baseURL}/photo`, payload);
+    expect(response.status).toBe(201);
+    expect(response.data).toHaveProperty("id");
+    createdPhotoId = response.data.id;
+  });
+
+  it("should retrieve the created photo", async () => {
+    const response = await axios.get(`${baseURL}/photo/${createdPhotoId}`);
+    expect(response.status).toBe(200);
+    expect(response.data.name).toBe("Test Photo");
+  });
+
+  it("should update the photo", async () => {
+    const updates = { description: "Updated description" };
+    const response = await axios.put(`${baseURL}/photo/${createdPhotoId}`, updates);
+    expect(response.status).toBe(200);
+    expect(response.data.message).toBe("Photo updated successfully.");
+  });
+
+  it("should retrieve all photos", async () => {
+    const response = await axios.get(`${baseURL}/photos`);
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.data)).toBe(true);
+  });
+
+  it("should delete the photo", async () => {
+    const response = await axios.delete(`${baseURL}/photo/${createdPhotoId}`);
+    expect(response.status).toBe(200);
+    expect(response.data.message).toBe("Photo deleted successfully.");
+  });
+});
