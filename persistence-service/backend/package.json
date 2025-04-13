@@ -32,5 +32,25 @@
     "build": "tsc",
     "lint": "eslint --max-warnings 0 .",
     "test": "jest"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testMatch": [
+      "<rootDir>/src/**/*.test.ts"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json"
+    ],
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/",             
+      "\\.js$"      
+    ]
   }
 }

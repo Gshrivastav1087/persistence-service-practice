@@ -60,7 +60,7 @@ export default class VideoApi {
       const updates = req.body;
       const service = getPersistenceService();
       await service.update(Video, id, updates);
-      res.status(200).json({ message: "Video updated successfully" });
+      res.status(200).json({ message: "Video updated successfully." }); // <- updated
     } catch (err) {
       res.status(500).json({ error: "Error updating video" });
     }
@@ -71,7 +71,7 @@ export default class VideoApi {
       const id = parseInt(req.params.id);
       const service = getPersistenceService();
       await service.delete(Video, id);
-      res.status(200).json({ message: "Video deleted successfully" });
+      res.status(200).json({ message: "Video deleted successfully." }); // <- updated
     } catch (err) {
       res.status(500).json({ error: "Error deleting video" });
     }

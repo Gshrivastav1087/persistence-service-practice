@@ -1,13 +1,16 @@
 module.exports = {
-  roots: ["<rootDir>"],
+  roots: ["<rootDir>/src"], // point to your `src` folder
   transform: {
-    ".(ts|tsx)": "ts-jest",
+    "^.+\\.(ts|tsx)$": "ts-jest",
   },
-  testRegex: ".*.(test|spec).(ts|tsx|js)$",
+  testMatch: [
+    "**/__tests__/**/*.+(ts|tsx|js)",
+    "**/?(*.)+(test|spec).+(ts|tsx|js)"
+  ],
   testPathIgnorePatterns: [
     "/node_modules/",
-    ".*.snapshots.ts",
     "/dist/",
-    "src/strategy/flatfile/flatfileDb/",
+    "/flatfileDb/"
   ],
+  testEnvironment: "node"
 };
